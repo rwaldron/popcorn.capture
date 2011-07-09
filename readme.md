@@ -6,16 +6,17 @@ Create data-uri png posters by capturing any frame in your video!
 	var $pop = Popcorn( "#video-id" ),
 		poster;
 
-	//	Jump to the frame we want to capture and create a poster!
+	// Jump to the frame we want to capture and create a poster!
 	poster = $pop.currentTime( 10 ).capture();
 
 
-	//	Poster will be set by default...
+	// Poster will be set by default...
 	$pop.currentTime( 10 ).capture();
 
 
-	//	Teleport, capture and return
+	// Teleport, capture and return
 	$pop.capture({
+
 		// You can also specify SMPTE time strings
 		at: 10
 	});
