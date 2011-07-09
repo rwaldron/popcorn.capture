@@ -29,6 +29,17 @@ Create data-uri png posters by capturing any frame in your video!
 	});
 
 
+	// Set the captured frame to an image, while returning the
+	// popcorn media to continue chaining methods!
+	$pop.capture({
+
+		target: "img#capture",
+
+		// Set media:true to override the return!
+		media: true
+
+		// This allows us to chain additional methods to this call:
+	}).currentTime( 10 ).play();
 
 Jakefile
 
