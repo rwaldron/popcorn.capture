@@ -19,5 +19,4 @@ Jakefile
 
 		minify  - UglifyJS on all application code
 		hint    - JSHint on all application code
-		assets  - Compile non-JavaScript assets (CSS)
 		clean   - delete generated files
