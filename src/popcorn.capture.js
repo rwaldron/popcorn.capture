@@ -13,8 +13,13 @@
 	var doc = global.document,
 		defaults = {
 			type: "png",
+			// Set to poster attribute by default
 			set: true,
-			at: null
+			// Capture time, uses currentTime by default
+			at: null,
+			// Target selector, no target by default
+			// Use by providing selector to an image element
+			target: null
 		};
 
 	Popcorn.prototype.capture = function( options ) {
@@ -64,7 +69,7 @@
 		// Capture pixel data as a base64 encoded data url
 		dataUrl = canvas.toDataURL( "image/" + opts );
 
-		console.log( dataUrl );
+		//console.log( dataUrl );
 
 		// By default, we set the poster attribute of the popcorn instance
 		if ( opts.set ) {
