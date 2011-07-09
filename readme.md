@@ -17,6 +17,7 @@ Create data-uri png posters by capturing any frame in your video!
 	// Teleport, capture and return
 	$pop.capture({
 
+		// By setting at:time, you can jump to that time, capture and return to the current time
 		// You can also specify SMPTE time strings
 		at: 10
 	});
