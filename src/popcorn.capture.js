@@ -61,6 +61,9 @@
 			canvas.width = dims.width;
 			canvas.height = dims.height;
 
+			// Hide the canvas
+			canvas.style.display = "none";
+
 			// Append it to the same parent as the target movie
 			this.media.parentNode.appendChild( canvas );
 		}
