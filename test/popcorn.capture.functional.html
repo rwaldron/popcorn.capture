@@ -1,0 +1,38 @@
+<script src="../src/popcorn.capture.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+
+    var typables = document.querySelectorAll("input,textarea");
+
+    popcorn.capture("../data/popcorn.capture.json", typables, function( snips ) {
+
+    });
+
+		document.querySelectorAll("textarea")[0].focus();
+
+  }, false);
+</script>
+
+<input type="text" value="" style="width:200px;padding:10px;">
+<input type="text" value="" style="width:200px;padding:10px;">
+
+<hr>
+<textarea style="width:500px;height:300px;"></textarea>
+
+<pre>
+ca => console.assert( ${0} );
+cc => console.count( ${0} );
+cd => console.debug( ${0} );
+ce => console.error( ${0} );
+ci => console.info( ${0} );
+cl => console.log( ${0} );
+cr => console.dir( ${0} );
+cw => console.warn( ${0} );
+
+fe => function() {\n\t${0}\n}
+cf => function ${0}() {\n\n}
+fc => (function() {\n\t${0}\n})();
+
+pr => print( ${0} )
+
+</pre>

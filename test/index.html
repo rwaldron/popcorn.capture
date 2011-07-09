@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<title>Popcorn.capture.js Test Suite</title>
+	<link rel="stylesheet" href="qunit/qunit.css" type="text/css" media="screen">
+	<script src="qunit/qunit.js"></script>
+	<script src="http://popcornjs.org/code/dist/popcorn.js"></script>
+	<script src="popcorn.capture.unit.js"></script>
+	<script src="../src/popcorn.capture.js"></script>
+</head>
+<body>
+	<h1 id="qunit-header">Popcorn.capture.js Test Suite</h1>
+	<h2 id="qunit-banner"></h2>
+	<div id="qunit-testrunner-toolbar"></div>
+	<h2 id="qunit-userAgent"></h2>
+	<ol id="qunit-tests"></ol>
+	<div id="qunit-fixture">
+		<video height="180" width="300" id="video" controls>
+		<source src="assets/popcorntest.mp4"></source>
+		<source src="assets/popcorntest.ogv"></source>
+		<source src="assets/popcorntest.webm"></source>
+		</video>
+	</div>
+
+  <div id="unmoved-fixture">
+		<video height="180" width="300" id="video-target" controls>
+		<source src="assets/popcorntest.mp4"></source>
+		<source src="assets/popcorntest.ogv"></source>
+		<source src="assets/popcorntest.webm"></source>
+		</video>
+  </div>
+
+
+</body>
+</html>
