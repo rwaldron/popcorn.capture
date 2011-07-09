@@ -12,8 +12,9 @@
 
 	var doc = global.document,
 	defaults = {
+		// Set image type, encodes as png by default
 		type: "png",
-		// Set to poster attribute by default
+		// Set to poster attribute, this occurs by default
 		set: true,
 		// Capture time, uses currentTime by default
 		at: null,
