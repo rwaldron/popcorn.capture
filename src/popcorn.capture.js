@@ -11,24 +11,24 @@
 (function( global, Popcorn ) {
 
 	var doc = global.document,
-		defaults = {
-			type: "png",
-			// Set to poster attribute by default
-			set: true,
-			// Capture time, uses currentTime by default
-			at: null,
-			// Target selector, no target by default
-			// Use by providing selector to an image element
-			target: null
-		};
+	defaults = {
+		type: "png",
+		// Set to poster attribute by default
+		set: true,
+		// Capture time, uses currentTime by default
+		at: null,
+		// Target selector, no target by default
+		// Use by providing selector to an image element
+		target: null
+	};
 
 	Popcorn.prototype.capture = function( options ) {
 
 		var context, time, dataUrl,
-			opts = Popcorn.extend( {}, defaults, options ),
-			dims = this.position(),
-			canvasId = "popcorn-canvas-" + this.media.id,
-			canvas = doc.getElementById( canvasId );
+		opts = Popcorn.extend( {}, defaults, options ),
+		dims = this.position(),
+		canvasId = "popcorn-canvas-" + this.media.id,
+		canvas = doc.getElementById( canvasId );
 
 		// If the canvas we want does not exist...
 		if ( !canvas ) {
