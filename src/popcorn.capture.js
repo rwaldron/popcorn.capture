@@ -95,6 +95,11 @@
 		} else {
 
 			//http://call.jsonlib.com/fetch?url=
+			// Trying as an async call
+			Popcorn.getScript("http://call.jsonlib.com/fetch?url=" + encodeURIComponent(this.media.currentSrc) + "&callback=capture", function( data ) {
+
+				console.log( "getScript complete:", data );
+			});
 		}
 
 		// If a target selector has been provided, set src to dataUrl
