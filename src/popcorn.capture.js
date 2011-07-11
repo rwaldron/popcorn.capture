@@ -87,8 +87,15 @@
 		// Draw the current media frame into the canvas
 		context.drawImage( this.media, 0, 0, dims.width, dims.height );
 
-		// Capture pixel data as a base64 encoded data url
-		dataUrl = canvas.toDataURL( "image/" + opts );
+		// Determine origin of resource
+		if ( ( new RegExp( location.hostname ) ).test( this.media.currentSrc ) ) {
+			// Capture pixel data as a base64 encoded data url
+			dataUrl = canvas.toDataURL( "image/" + opts );
+
+		} else {
+
+			//http://call.jsonlib.com/fetch?url=
+		}
 
 		// If a target selector has been provided, set src to dataUrl
 		if ( opts.target ) {

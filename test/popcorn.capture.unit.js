@@ -50,6 +50,27 @@ test("Creates Canvas", function() {
 	});
 });
 
+test("Creates Canvas from remote", function() {
+
+	var $pop = Popcorn("#remote-video-target"),
+		count = 0,
+		expects = 1;
+
+	expect(1);
+
+	function plus() {
+		if ( ++count === expects ) {
+			start();
+		}
+	}
+
+	stop();
+
+	ok( $pop.capture(), "can capture from remote");
+	plus();
+});
+
+
 test("default return", function() {
 
 	var $pop = Popcorn("#video-target"),
@@ -198,7 +219,7 @@ test("sets source of targets matching selector", function() {
 
 			$pop.media.parentNode.appendChild( image );
 
-			$pop.exec( 25, function() {
+			$pop.exec( 24, function() {
 
 				this.capture({
 					target: "img#capture"
@@ -207,10 +228,10 @@ test("sets source of targets matching selector", function() {
 				ok( rdataurl.test( image.src ), "rdataurl.test( image.src ); has data url" );
 				plus();
 
-			}).currentTime( 23 ).play();
+			}).pause().currentTime( 23 ).play();
 
 		} else {
-			setTimeout( testSrc, 10 );
+			setTimeout( testSrc, 0 );
 		}
 	}
 
