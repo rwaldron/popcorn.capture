@@ -1,5 +1,7 @@
 # Popcorn.capture.js
 
+## Note, this feature will not work with videos requested across domains. Same Origin Policy forbids the use of getImageData(), toDataUrl() and other canvas API methods.
+
 
 Create data-uri png posters by capturing any frame in your video!
 
