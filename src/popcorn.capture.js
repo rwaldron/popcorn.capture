@@ -26,15 +26,16 @@
 		// Use by providing selector to an image element
 		target: null,
 
-		// Preferred return, defaults to returning dataurl
-		// Set media: true to return the popcorn instance for
-		// chaining methods
-		media: false
+		// Reload the video after poster is set
+		// Otherwise the poster will not be displayed
+		reload: true
 	};
 
 	Popcorn.prototype.capture = function( options ) {
 
 		var context, time, dataUrl, targets,
+
+		p = this,
 
 		// Merge user options & defaults into new object
 		opts = Popcorn.extend( {}, defaults, options ),
@@ -46,7 +47,53 @@
 		canvasId = "popcorn-canvas-" + this.media.id,
 
 		// The canvas element associated with this media
-		canvas = doc.getElementById( canvasId );
+		canvas = doc.getElementById( canvasId ),
+
+		seeked = function() {
+
+			// Draw the current media frame into the canvas
+			context.drawImage( p.media, 0, 0, dims.width, dims.height );
+
+			// Capture pixel data as a base64 encoded data url
+			dataUrl = canvas.toDataURL( "image/" + opts.type );
+
+			// If a target selector has been provided, set src to dataUrl
+			if ( opts.target ) {
+				targets = doc.querySelectorAll( opts.target );
+
+				// If valid targets exist
+				if ( targets.length ) {
+
+					// Iterate all targets
+					Popcorn.forEach( targets, function( node ) {
+
+						// If target is a valid IMG element
+						if ( node.nodeName === "IMG" ) {
+							// Set the node's src to the captured dataUrl
+							node.src = dataUrl;
+						}
+					});
+				}
+			}
+
+			// By default, we set the poster attribute of the popcorn instance
+			if ( opts.set ) {
+				p.media.setAttribute( "poster", dataUrl );
+			}
+
+			// If a time is provided, Restore to original time
+			if ( opts.at ) {
+				// Jump back to original time
+				p.currentTime( time );
+			}
+
+			// If a reload is provided, Restore the media
+			if ( opts.reload ) {
+				p.media.load();
+			}
+
+			p.unlisten( "seeked", seeked );
+		};
 
 		// If the canvas we want does not exist...
 		if ( !canvas ) {
@@ -68,6 +115,8 @@
 			this.media.parentNode.appendChild( canvas );
 		}
 
+		p.listen( "seeked", seeked );
+
 		// Get the canvas's context for reading/writing
 		context = canvas.getContext("2d");
 
@@ -84,43 +133,7 @@
 			this.currentTime( opts.at );
 		}
 
-		// Draw the current media frame into the canvas
-		context.drawImage( this.media, 0, 0, dims.width, dims.height );
-
-		// Capture pixel data as a base64 encoded data url
-		dataUrl = canvas.toDataURL( "image/" + opts );
-
-		// If a target selector has been provided, set src to dataUrl
-		if ( opts.target ) {
-			targets = doc.querySelectorAll( opts.target );
-
-			// If valid targets exist
-			if ( targets.length ) {
-
-				// Iterate all targets
-				Popcorn.forEach( targets, function( node ) {
-
-					// If target is a valid IMG element
-					if ( node.nodeName === "IMG" ) {
-						// Set the node's src to the captured dataUrl
-						node.src = dataUrl;
-					}
-				});
-			}
-		}
-
-		// By default, we set the poster attribute of the popcorn instance
-		if ( opts.set ) {
-			this.media.setAttribute( "poster", dataUrl );
-		}
-
-		// If a time is provided, Restore to original time
-		if ( opts.at ) {
-			// Jump back to original time
-			this.currentTime( time );
-		}
-
-		return ( opts.media && this ) || dataUrl;
+		return this;
 	};
 
 })( this, this.Popcorn );
