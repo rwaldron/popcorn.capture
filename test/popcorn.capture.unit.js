@@ -50,9 +50,9 @@ test("Creates Canvas", function() {
 	});
 });
 
-test("default return", function() {
+test("Returns Popcorn Instance Object", function() {
 
-	var $pop = Popcorn("#video-target"),
+	var $pop = Popcorn("#video"),
 		count = 0,
 		expects = 1;
 
@@ -66,53 +66,51 @@ test("default return", function() {
 
 	stop();
 
-	var startAt = 23,
-		captureAt = 4,
-		dataUrl;
+	var obj;
 
-	dataUrl = $pop.currentTime( startAt ).capture({
-		at: captureAt
+	$pop.listen("canplayall", function() {
+		obj = $pop.capture();
+
+		deepEqual( obj, $pop, "Returns the popcorn instance" );
+		plus();
 	});
-
-	ok( rdataurl.test( dataUrl ), "rdataurl.test( dataUrl ) proves data url was returned" );
-	plus();
 });
 
-test("can override return for method chaining (helper for use with setting targets by selector)", function() {
-
-	var $pop = Popcorn("#video-target"),
-		count = 0,
-		expects = 1;
-
-	expect(1);
-
-	function plus() {
-		if ( ++count === expects ) {
-			start();
-		}
-	}
-
-	stop();
-
-	var startAt = 23,
-		captureAt = 4,
-		overridden;
-
-	overridden = $pop.currentTime( startAt ).capture({
-		media: true
-	});
-
-	deepEqual( overridden, $pop, "Setting media:true return override correctly returns the popcorn instance" );
-	plus();
-});
+// test("default return", function() {
+//
+// 	var $pop = Popcorn("#video-target"),
+// 		count = 0,
+// 		expects = 1;
+//
+// 	expect(1);
+//
+// 	function plus() {
+// 		if ( ++count === expects ) {
+// 			start();
+// 		}
+// 	}
+//
+// 	stop();
+//
+// 	var startAt = 23,
+// 		captureAt = 4,
+// 		dataUrl;
+//
+// 	dataUrl = $pop.currentTime( startAt ).capture({
+// 		at: captureAt
+// 	});
+//
+// 	ok( rdataurl.test( dataUrl ), "rdataurl.test( dataUrl ) proves data url was returned" );
+// 	plus();
+// });
 
 test("can jump to and from time", function() {
 
-	var $pop = Popcorn("#video-target"),
+	var $pop = Popcorn("#video"),
 		count = 0,
 		expects = 1;
 
-	expect(1);
+	expect(expects);
 
 	function plus() {
 		if ( ++count === expects ) {
@@ -122,53 +120,22 @@ test("can jump to and from time", function() {
 
 	stop();
 
-	var startAt = 23,
-		captureAt = 4;
+	var startAt = 0,
+		captureAt = 2;
 
-	$pop.currentTime( startAt ).capture({
-		at: captureAt
-	});
+	$pop.listen("canplayall", function() {
 
-	equal( $pop.currentTime(), startAt, "capture({ at: time }) can jump to specified time and correctly return to original place" );
-	plus();
-});
+		this.currentTime( startAt ).capture({
+			at: captureAt
+		}).listen( "captured", function() {
 
-test("sets the poster attribute by default", function() {
-
-	var $pop = Popcorn("#video-target"),
-		count = 0,
-		expects = 1;
-
-	expect(1);
-
-	function plus() {
-		if ( ++count === expects ) {
-			start();
-		}
-	}
-
-	stop();
-
-	var startAt = 23,
-	captureAt = 4;
-
-	function testAttr() {
-
-		if ( $pop.media.readyState === 4 ) {
-
-			$pop.currentTime( startAt ).capture({
-				at: captureAt
-			});
-
-			ok( rdataurl.test( $pop.media.getAttribute("poster") ), "rdataurl.test( $pop.media.poster ); has data url" );
+			equal( this.currentTime(), startAt, "capture({ at: time }) can jump to specified time and correctly return to original place" );
 			plus();
 
-		} else {
-			setTimeout( testAttr, 10 );
-		}
-	}
-
-	testAttr();
+			// equal( this.media.poster, cap, "Correct capture" );
+			// plus();
+		});
+	});
 });
 
 test("sets source of targets matching selector", function() {
@@ -187,34 +154,56 @@ test("sets source of targets matching selector", function() {
 
 	stop();
 
-	function testSrc() {
+	var image = document.createElement("image");
 
-		if ( $pop.media.readyState === 4 ) {
+	image.id = "capture";
+	image.style.marginLeft = "10px";
 
-			var image = document.createElement("image");
+	$pop.media.parentNode.appendChild( image );
 
-			image.id = "capture";
-			image.style.marginLeft = "10px";
+	$pop.listen( "canplayall", function() {
 
-			$pop.media.parentNode.appendChild( image );
+		$pop.exec( 25, function() {
 
-			$pop.exec( 25, function() {
+			this.capture({
+				target: "img#capture"
+			});
 
-				this.capture({
-					target: "img#capture"
-				});
+			ok( rdataurl.test( image.src ), "rdataurl.test( image.src ); has data url" );
+			plus();
 
-				ok( rdataurl.test( image.src ), "rdataurl.test( image.src ); has data url" );
-				plus();
+		}).currentTime( 23 ).play();
+	});
+});
 
-			}).currentTime( 23 ).play();
+test("Sets the poster attribute", function() {
 
-		} else {
-			setTimeout( testSrc, 10 );
+	var $pop = Popcorn("#video-target"),
+		count = 0,
+		expects = 1;
+
+	expect(1);
+
+	function plus() {
+		if ( ++count === expects ) {
+			start();
 		}
 	}
 
-	testSrc();
+	stop();
+
+	$pop.listen( "canplayall", function() {
+
+		this.exec( 2, function() {
+
+			this.capture();
+
+			ok( rdataurl.test( this.media.getAttribute("poster") ), "rdataurl.test( $pop.media.poster ); has data url" );
+			plus();
+
+		}).currentTime( 1 ).play();
+	});
 });
+
 
 //rdataUrl

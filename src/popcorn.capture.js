@@ -8,9 +8,9 @@
 
 // Requires Popcorn.js
 /* global Popcorn: true */
-(function( global, Popcorn ) {
+(function( global, Popcorn, document ) {
 
-	var doc = global.document,
+	var doc = document,
 	defaults = {
 
 		// Set image type, encodes as png by default
@@ -33,9 +33,7 @@
 
 	Popcorn.prototype.capture = function( options ) {
 
-		var context, time, dataUrl, targets,
-
-		p = this,
+		var context, dataUrl, seeked, targets, time,
 
 		// Merge user options & defaults into new object
 		opts = Popcorn.extend( {}, defaults, options ),
@@ -47,12 +45,48 @@
 		canvasId = "popcorn-canvas-" + this.media.id,
 
 		// The canvas element associated with this media
-		canvas = doc.getElementById( canvasId ),
+		canvas = doc.getElementById( canvasId );
+
+		// If a time is provided
+		if ( opts.at ) {
+
+			// Normalize capture time in case smpte time was given
+			opts.at = Popcorn.util.toSeconds( opts.at );
+
+			// Save the current time
+			time = this.currentTime();
+
+			// Jump to the capture time
+			this.currentTime( opts.at );
+		}
+
+		// If the canvas we want does not exist...
+		if ( !canvas ) {
+
+			// Create a new canvas
+			canvas = doc.createElement( "canvas" );
+
+			// Give it our known/expected ID
+			canvas.id = canvasId;
+
+			// Set it to the same dimensions as the target movie
+			canvas.width = dims.width;
+			canvas.height = dims.height;
+
+			// Hide the canvas
+			canvas.style.display = "none";
+
+			// Append it to the same parent as the target movie
+			this.media.parentNode.appendChild( canvas );
+		}
+
+		// Get the canvas's context for reading/writing
+		context = canvas.getContext("2d");
 
 		seeked = function() {
 
 			// Draw the current media frame into the canvas
-			context.drawImage( p.media, 0, 0, dims.width, dims.height );
+			context.drawImage( this.media, 0, 0, dims.width, dims.height );
 
 			// Capture pixel data as a base64 encoded data url
 			dataUrl = canvas.toDataURL( "image/" + opts.type );
@@ -78,62 +112,34 @@
 
 			// By default, we set the poster attribute of the popcorn instance
 			if ( opts.set ) {
-				p.media.setAttribute( "poster", dataUrl );
+				this.media.setAttribute( "poster", dataUrl );
 			}
 
 			// If a time is provided, Restore to original time
 			if ( opts.at ) {
 				// Jump back to original time
-				p.currentTime( time );
+				this.listen( "loaded", function() {
+					this.currentTime( time );
+				});
 			}
 
 			// If a reload is provided, Restore the media
 			if ( opts.reload ) {
-				p.media.load();
+				this.media.load();
 			}
 
-			p.unlisten( "seeked", seeked );
+			this.unlisten( "seeked", seeked );
+
+			this.trigger( "captured" );
 		};
 
-		// If the canvas we want does not exist...
-		if ( !canvas ) {
+		this.listen( "seeked", seeked );
 
-			// Create a new canvas
-			canvas = doc.createElement( "canvas" );
-
-			// Give it our known/expected ID
-			canvas.id = canvasId;
-
-			// Set it to the same dimensions as the target movie
-			canvas.width = dims.width;
-			canvas.height = dims.height;
-
-			// Hide the canvas
-			canvas.style.display = "none";
-
-			// Append it to the same parent as the target movie
-			this.media.parentNode.appendChild( canvas );
-		}
-
-		p.listen( "seeked", seeked );
-
-		// Get the canvas's context for reading/writing
-		context = canvas.getContext("2d");
-
-		// If a time is provided
-		if ( opts.at ) {
-
-			// Normalize capture time in case smpte time was given
-			opts.at = Popcorn.util.toSeconds( opts.at );
-
-			// Save the current time
-			time = this.currentTime();
-
-			// Jump to the capture time
-			this.currentTime( opts.at );
+		if ( !opts.at ) {
+			seeked.call( this );
 		}
 
 		return this;
 	};
 
-})( this, this.Popcorn );
+})( this, this.Popcorn, this.document );
