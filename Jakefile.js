@@ -8,16 +8,14 @@ util = require("util"),
 exec = require("child_process").exec,
 child;
 
-// Global constants
-const _FILES_ = {
-				src: [
-					"popcorn.capture.js"
-				]
-			},
-			_SRC_ = "src/",
-			_DIST_ = "dist/";
-
-const _PROJECT_ = "popcorn.capture";
+const FILES = {
+	src: [
+		"popcorn.capture.js"
+	]
+},
+SRC_DIR = "src/",
+DIST_DIR = "dist/",
+PROJECT = "popcorn.capture";
 
 
 desc("Uglify JS");
@@ -26,30 +24,28 @@ task("minify", [ "hint" ], function( params ) {
 	print( "\nUglifying..." );
 
 	var ast, out,
-	files = _FILES_;
+	files, type;
 
+	for ( type in FILES ) {
 
-	for ( var type in files ) {
-
-		var _files = files[ type ],
 		all = "";
 
 		// Concatenate JavaScript resources
-		_files.forEach(function(file, i) {
+		FILES[ type ].forEach(function( file, i ) {
 			if ( file.match(/^.*js$/) && file ) {
-				all += fs.readFileSync( _SRC_ + file ).toString();
+				all += fs.readFileSync( SRC_DIR + file ).toString();
 			}
 		});
 
 		// Outout concatenated
-		out = fs.openSync( _DIST_ + _PROJECT_ + ".js", "w+" );
+		out = fs.openSync( DIST_DIR + PROJECT + ".js", "w+" );
 		fs.writeSync( out, all );
 
 		// Create AST from concatenated sources
 		ast = uglify.parser.parse( all );
 
 		// Open output stream
-		out = fs.openSync( _DIST_ + _PROJECT_ + ".min.js", "w+" );
+		out = fs.openSync( DIST_DIR + PROJECT + ".min.js", "w+" );
 
 		// Compress AST
 		ast = uglify.uglify.ast_mangle( ast );
@@ -68,10 +64,10 @@ task("hint", [], function( params ) {
 
 	print( "\nHinting...\n" );
 
-	var files = _FILES_;
+	var files = FILES;
 
 	function hintFile( file ) {
-		var src = fs.readFileSync( _SRC_ + file, "utf8"),
+		var src = fs.readFileSync( SRC_DIR + file, "utf8"),
 		ok = {
 			// warning.reason
 			"Expected an identifier and instead saw 'undefined' (a reserved word).": true,
@@ -124,10 +120,10 @@ task("clean", [], function( params ) {
 
 	print( "\nCleaning...\n\n" );
 
-	_FILES_.src.forEach(function( file, i ) {
+	FILES.src.forEach(function( file, i ) {
 
 
-		exec("rm " + _DIST_ + file,
+		exec("rm " + DIST_DIR + file,
 			function( error, stdout, stderr ) {
 
 				if ( error !== null && !/No such file/.test( error ) ) {
