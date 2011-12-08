@@ -1,6 +1,6 @@
 var // Program refs
 fs = require("fs"),
-sys = require("sys"),
+sys = require("util"),
 uglify = require("uglify-js"),
 jshint = require("jshint").JSHINT,
 print = require("sys").print,
@@ -64,8 +64,6 @@ task("hint", [], function( params ) {
 
 	print( "\nHinting...\n" );
 
-	var files = FILES;
-
 	function hintFile( file ) {
 		var src = fs.readFileSync( SRC_DIR + file, "utf8"),
 		ok = {
@@ -109,7 +107,7 @@ task("hint", [], function( params ) {
 		}
 	}
 
-	files.src.forEach(function( file, i ) {
+	FILES.src.forEach(function( file, i ) {
 
 		hintFile( file );
 	})
