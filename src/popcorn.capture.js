@@ -64,7 +64,7 @@
 		if ( !canvas ) {
 
 			// Create a new canvas
-			canvas = doc.createElement( "canvas" );
+			canvas = doc.createElement("canvas");
 
 			// Give it our known/expected ID
 			canvas.id = canvasId;
@@ -130,7 +130,7 @@
 
 			this.unlisten( "seeked", seeked );
 
-			this.trigger( "captured" );
+			this.trigger("captured");
 		};
 
 		this.listen( "seeked", seeked );
