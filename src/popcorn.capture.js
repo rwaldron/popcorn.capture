@@ -118,7 +118,7 @@
 			// If a time is provided, Restore to original time
 			if ( opts.at ) {
 				// Jump back to original time
-				this.listen( "loaded", function() {
+				this.on( "loaded", function() {
 					this.currentTime( time );
 				});
 			}
@@ -128,12 +128,12 @@
 				this.media.load();
 			}
 
-			this.unlisten( "seeked", seeked );
+			this.off( "seeked", seeked );
 
-			this.trigger("captured");
+			this.emit("captured");
 		};
 
-		this.listen( "seeked", seeked );
+		this.on( "seeked", seeked );
 
 		if ( !opts.at ) {
 			seeked.call( this );
